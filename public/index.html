@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Availability Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Check Product Availability</h2>
+    <input type="text" id="productUrl" placeholder="Enter product URL" />
+    <button onclick="checkProduct()">Check</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    async function checkProduct() {
+      const urlInput = document.getElementById('productUrl').value;
+      const resultDiv = document.getElementById('result');
+      if (!urlInput) {
+        resultDiv.textContent = 'Please enter a product URL.';
+        return;
+      }
+      resultDiv.textContent = 'Checking...';
+
+      try {
+        const response = await fetch(`/check-product?url=${encodeURIComponent(urlInput)}`);
+        const data = await response.json();
+
+       if (data && data.success && data.data && data.data.exist === true) {
+  resultDiv.textContent = '✅ Product is available!';
+} else if (data && data.success && data.data && data.data.exist === false) {
+  resultDiv.textContent = '❌ Product is not available.';
+} else {
+  resultDiv.textContent = '⚠️ Unexpected response: ' + JSON.stringify(data);
+}
+
+      } catch (error) {
+        resultDiv.textContent = '🚫 Error checking product: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
