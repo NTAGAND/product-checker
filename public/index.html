@@ -4,25 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Product Availability Checker</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 1.1rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Check Product Availability</h1>
-  <input type="text" id="urlInput" placeholder="Enter product URL" style="width: 300px;" />
-  <button onclick="checkProduct()">Check</button>
-  <p id="result"></p>
+  <div class="container">
+    <h1>Check Product Availability</h1>
+    <input type="text" id="urlInput" placeholder="Enter product URL" />
+    <button onclick="checkProduct()">Check</button>
+    <p id="result"></p>
+  </div>
 
   <script>
     async function checkProduct() {
       const url = document.getElementById('urlInput').value;
       const resultDiv = document.getElementById('result');
-      resultDiv.textContent = 'Checking...';
+      resultDiv.textContent = '🔄 Checking...';
 
       try {
         const response = await fetch('/check-product?url=' + encodeURIComponent(url));
         const data = await response.json();
-        if (data && data.success && data.data && data.data.exist === true) {
+        if (data?.success && data?.data?.exist === true) {
           resultDiv.textContent = '✅ Product is available!';
-        } else if (data && data.success && data.data && data.data.exist === false) {
+        } else if (data?.success && data?.data?.exist === false) {
           resultDiv.textContent = '❌ Product is not available.';
         } else {
           resultDiv.textContent = '⚠️ Unexpected response: ' + JSON.stringify(data);
